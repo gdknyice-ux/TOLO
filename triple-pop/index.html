@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#f7d99a">
+<title>Triple Pop 手機試玩版</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+:root{--brown:#6f4928;--cream:#fff7df;--gold:#ffc948;--green:#79c84e;--line:#d7aa66}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#ead09c;font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC",sans-serif;color:var(--brown)}
+button{font:inherit}
+#app{width:100%;max-width:480px;height:100dvh;margin:auto;position:relative;overflow:hidden;background:linear-gradient(#9bd9ef 0 18%,#f6d99b 18% 100%)}
+.screen{position:absolute;inset:0;display:none;padding:max(10px,env(safe-area-inset-top)) 12px max(10px,env(safe-area-inset-bottom));}
+.screen.active{display:flex;flex-direction:column}
+.top{height:54px;display:grid;grid-template-columns:48px 1fr 48px;align-items:center;gap:10px;margin-bottom:8px}
+.round,.pill{border:3px solid #d9a85e;background:linear-gradient(#fffdf4,#f7e5bd);box-shadow:0 4px 0 #b77d39;color:var(--brown);font-weight:900}
+.round{width:46px;height:46px;border-radius:50%;font-size:21px}.pill{border-radius:18px;padding:8px 12px;text-align:center;font-size:18px}
+.homeCard{margin:auto 0;background:rgba(255,249,229,.95);border:4px solid #dfb36d;border-radius:28px;padding:24px 18px;box-shadow:0 10px 0 rgba(111,73,40,.18);text-align:center}
+.logo{font-size:40px;font-weight:1000;letter-spacing:-1px}.tag{font-size:16px;font-weight:800;opacity:.75;margin-top:6px}.mascot{font-size:90px;margin:18px 0;filter:drop-shadow(0 8px 4px #0002)}
+.bigbtn{width:100%;border:0;border-radius:20px;padding:15px 12px;margin-top:12px;font-size:22px;font-weight:1000;color:#fff;background:linear-gradient(#8ddb59,#61ad38);box-shadow:0 7px 0 #438326}.bigbtn:active{transform:translateY(4px);box-shadow:0 3px 0 #438326}
+.bigbtn.orange{background:linear-gradient(#ffd25c,#f2a71b);box-shadow:0 7px 0 #bd7a10;color:#6b431d}
+.levelGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;overflow:auto;padding:8px 4px 24px}.level{aspect-ratio:1;border:3px solid #f4dd9d;border-radius:50%;background:linear-gradient(#6ecaf0,#3a9fd3);box-shadow:0 6px 0 #287fae;color:#fff;font-size:22px;font-weight:1000}.level.lock{background:#b8b1a6;box-shadow:0 6px 0 #888075;border-color:#ddd7ce}
+.game{background:linear-gradient(#f9e7bd,#ecc985);border:4px solid #c78f46;border-radius:24px;box-shadow:inset 0 0 0 5px #fff5,0 8px 0 #8d622f33;padding:8px;display:flex;flex-direction:column;min-height:0;flex:1}
+.board{display:grid;grid-template-columns:repeat(6,1fr);grid-auto-rows:1fr;gap:6px;flex:1;min-height:0;align-content:center}
+.tile{border:2px solid #e1bd82;border-radius:12px;background:linear-gradient(#fffdf6,#f3dfb9);box-shadow:0 4px 0 #c19252;display:flex;align-items:center;justify-content:center;font-size:clamp(24px,8.6vw,39px);min-width:0;min-height:0;position:relative;transition:.15s}.tile:active{transform:scale(.9)}.tile.hide{opacity:0;transform:scale(.2)}
+.tray{height:68px;margin-top:10px;background:#8b5d32;border:4px solid #67421f;border-radius:18px;padding:6px;display:grid;grid-template-columns:repeat(7,1fr);gap:4px}.slot{border-radius:9px;background:#65401f;display:flex;align-items:center;justify-content:center;font-size:clamp(22px,7vw,31px)}.slot.on{background:#fff4d5;border:2px solid #dbb573}
+.tools{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}.tool{border:3px solid #d5a45d;border-radius:16px;background:linear-gradient(#fff8e8,#efd29e);box-shadow:0 4px 0 #b47b37;padding:8px 3px;font-weight:900;color:#694421;font-size:13px}.tool b{display:block;font-size:24px}.tool:active{transform:translateY(3px);box-shadow:0 1px 0 #b47b37}
+.overlay{position:absolute;inset:0;background:#23170fb8;display:none;align-items:center;justify-content:center;padding:22px;z-index:9}.overlay.show{display:flex}.modal{width:100%;background:#fff6d9;border:5px solid #e1af62;border-radius:28px;padding:22px;text-align:center;box-shadow:0 10px 0 #0003}.modal h2{font-size:32px;margin:0 0 8px}.stars{font-size:48px}.modal p{font-weight:800;opacity:.75}
+.toast{position:absolute;top:76px;left:50%;transform:translateX(-50%);background:#5a3920;color:#fff;border-radius:18px;padding:9px 16px;font-weight:900;opacity:0;transition:.2s;z-index:20;white-space:nowrap}.toast.show{opacity:1}
+@media(max-height:690px){.top{height:46px}.round{width:40px;height:40px}.pill{padding:6px;font-size:16px}.tray{height:58px}.tools{margin-top:7px}.tool{padding:5px 2px}.tool b{font-size:20px}.game{border-radius:18px}}
+</style>
+</head>
+<body><main id="app">
+<section id="home" class="screen active"><div class="top"><div></div><div class="pill">⭐ <span id="score">0</span></div><button class="round" id="sound">🔊</button></div><div class="homeCard"><div class="logo">Triple Pop</div><div class="tag">三個相同，全部消除</div><div class="mascot">🧸</div><button class="bigbtn" id="start">開始遊戲</button><button class="bigbtn orange" id="quick">直接試玩</button></div></section>
+<section id="levels" class="screen"><div class="top"><button class="round backHome">←</button><div class="pill">選擇關卡</div><div></div></div><div id="levelGrid" class="levelGrid"></div></section>
+<section id="play" class="screen"><div class="top"><button class="round" id="backLevels">←</button><div class="pill">關卡 <span id="lv">1</span></div><div class="pill" style="font-size:14px">剩 <span id="remain">0</span></div></div><div class="game"><div id="board" class="board"></div><div id="tray" class="tray"></div><div class="tools"><button class="tool" id="undo"><b>↩️</b>返回</button><button class="tool" id="shuffle"><b>🔀</b>洗牌</button><button class="tool" id="hint"><b>💡</b>提示</button></div></div></section>
+<div id="overlay" class="overlay"><div id="modal" class="modal"></div></div><div id="toast" class="toast"></div>
+</main>
+<script>
+const icons=['☕','📚','🪴','📷','💡','🧸','🍎','⚽','🎁','🧁','🧢','🌼'];
+const $=s=>document.querySelector(s);let level=1,unlocked=+(localStorage.tpUnlocked||1),score=+(localStorage.tpScore||0),items=[],rack=[],history=[];
+function screen(id){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));$('#'+id).classList.add('active')}
+function toast(t){let e=$('#toast');e.textContent=t;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),900)}
+function levels(){let h='';for(let i=1;i<=20;i++)h+=`<button class="level ${i>unlocked?'lock':''}" ${i>unlocked?'disabled':''} data-level="${i}">${i}</button>`;$('#levelGrid').innerHTML=h;document.querySelectorAll('.level:not(.lock)').forEach(b=>b.onclick=()=>start(+b.dataset.level));screen('levels')}
+function start(n){level=n;rack=[];history=[];$('#lv').textContent=n;let groups=Math.min(4+Math.floor((n-1)/2),10),arr=[];for(let i=0;i<groups;i++)for(let j=0;j<3;j++)arr.push(icons[(i+n-1)%icons.length]);arr.sort(()=>Math.random()-.5);items=arr.map((icon,id)=>({id,icon,alive:true}));screen('play');render()}
+function render(){const alive=items.filter(x=>x.alive);$('#remain').textContent=alive.length;$('#board').innerHTML=alive.map(x=>`<button class="tile" data-id="${x.id}">${x.icon}</button>`).join('');document.querySelectorAll('.tile').forEach(b=>b.onclick=()=>pick(+b.dataset.id,b));$('#tray').innerHTML=Array.from({length:7},(_,i)=>`<div class="slot ${rack[i]?'on':''}">${rack[i]||''}</div>`).join('')}
+function pick(id,b){if(rack.length>=7)return;let x=items.find(v=>v.id===id&&v.alive);if(!x)return;history.push({id,rack:[...rack]});x.alive=false;rack.push(x.icon);b.classList.add('hide');setTimeout(()=>{match();render();judge()},130)}
+function match(){for(const icon of [...new Set(rack)]){let pos=[];rack.forEach((v,i)=>v===icon&&pos.push(i));if(pos.length>=3){rack=rack.filter((_,i)=>!pos.slice(0,3).includes(i));score++;localStorage.tpScore=score;$('#score').textContent=score;toast('消除成功！');break}}}
+function judge(){if(items.every(x=>!x.alive)&&rack.length===0)win();else if(rack.length>=7)lose()}
+function win(){unlocked=Math.max(unlocked,Math.min(20,level+1));localStorage.tpUnlocked=unlocked;show(`<h2>過關成功！</h2><div class="stars">⭐️⭐️⭐️</div><p>金幣 +50</p><button class="bigbtn" onclick="closeM();start(${Math.min(20,level+1)})">下一關</button><button class="bigbtn orange" onclick="closeM();toast('獎勵已加倍')">看廣告・獎勵 ×2</button>`)}
+function lose(){show(`<h2>差一點！</h2><div class="stars">😵</div><p>下方 7 格已放滿</p><button class="bigbtn" onclick="closeM();rack.splice(0,3);render();toast('已清出 3 格')">看廣告・清除 3 格</button><button class="bigbtn orange" onclick="closeM();start(level)">重新開始</button>`)}
+function show(h){$('#modal').innerHTML=h;$('#overlay').classList.add('show')}window.closeM=()=>$('#overlay').classList.remove('show');
+$('#start').onclick=levels;$('#quick').onclick=()=>start(1);document.querySelectorAll('.backHome').forEach(x=>x.onclick=()=>screen('home'));$('#backLevels').onclick=levels;
+$('#undo').onclick=()=>{let h=history.pop();if(!h)return toast('沒有上一步');items.find(x=>x.id===h.id).alive=true;rack=h.rack;render()};
+$('#shuffle').onclick=()=>{let a=items.filter(x=>x.alive).sort(()=>Math.random()-.5),d=items.filter(x=>!x.alive);items=[...a,...d];render();toast('已重新排列')};
+$('#hint').onclick=()=>{let count={};items.filter(x=>x.alive).forEach(x=>count[x.icon]=(count[x.icon]||0)+1);let key=Object.keys(count).find(k=>count[k]>=3);toast(key?`先找 ${key}`:'沒有提示')};
+$('#sound').onclick=e=>{e.currentTarget.textContent=e.currentTarget.textContent==='🔊'?'🔇':'🔊'};$('#score').textContent=score;
+</script></body></html>
